@@ -8,117 +8,65 @@ from pyrogram.types import (
     InlineKeyboardMarkup, InlineKeyboardButton,
     CallbackQuery, InlineQuery)
 
-Tgraph = Client(
+LIMIT = 5242880*2
+
+
+jvbot = Client(
    "Telegra.ph Uploader",
    api_id=Config.APP_ID,
    api_hash=Config.API_HASH,
    bot_token=Config.TG_BOT_TOKEN,
 )
 
-@Tgraph.on_message(filters.photo)
-async def uploadphoto(client, message):
-  msg = await message.reply_text("`Tʀʏɪɴɢ Tᴏ Dᴏᴡɴʟᴏᴀᴅ`")
-  userid = str(message.chat.id)
-  img_path = (f"./DOWNLOADS/{userid}.jpg")
-  img_path = await client.download_media(message=message, file_name=img_path)
-  await msg.edit_text("`Tʀʏɪɴɢ Tᴏ Uᴘʟᴏᴀᴅ.....`")
-  try:
-    tlink = upload_file(img_path)
-  except:
-    await msg.edit_text("`Something went wrong`") 
-  else:
-    await msg.edit_text(f"https://telegra.ph{tlink[0]}")     
-    os.remove(img_path) 
+START_TEXT = """
+Hello {}, I' am Telegraph Uploader bot.
+- I will download the given media and upload it to telegraph server
+- Maxx limit 5mb of a file 
+Made by @SexyPiyush
+"""
 
-@Tgraph.on_message(filters.animation)
-async def uploadgif(client, message):
-  if(message.animation.file_size < 5242880):
-    msg = await message.reply_text("`Tʀʏɪɴɢ Tᴏ Dᴏᴡɴʟᴏᴀᴅ`")
-    userid = str(message.chat.id)
-    gif_path = (f"./DOWNLOADS/{userid}.mp4")
-    gif_path = await client.download_media(message=message, file_name=gif_path)
-    await msg.edit_text("`Tʀʏɪɴɢ Tᴏ Uᴘʟᴏᴀᴅ.....`")
-    try:
-      tlink = upload_file(gif_path)
-      await msg.edit_text(f"https://telegra.ph{tlink[0]}")   
-      os.remove(gif_path)   
-    except:
-      await msg.edit_text("Something really Happend Wrong...") 
-  else:
-    await message.reply_text("Size Should Be Less Than 5 mb")
-
-@Tgraph.on_message(filters.video)
-async def uploadvid(client, message):
-  if(message.video.file_size < 5242880):
-    msg = await message.reply_text("`Tʀʏɪɴɢ Tᴏ Dᴏᴡɴʟᴏᴀᴅ`")
-    userid = str(message.chat.id)
-    vid_path = (f"./DOWNLOADS/{userid}.mp4")
-    vid_path = await client.download_media(message=message, file_name=vid_path)
-    await msg.edit_text("`Tʀʏɪɴɢ Tᴏ Uᴘʟᴏᴀᴅ.....`")
-    try:
-      tlink = upload_file(vid_path)
-      await msg.edit_text(f"https://telegra.ph{tlink[0]}")     
-      os.remove(vid_path)   
-    except:
-      await msg.edit_text("Something really Happend Wrong...") 
-  else:
-    await message.reply_text("Size Should Be Less Than 5 mb")
-
-@Tgraph.on_message(filters.command(["start"]))
-async def home(client, message):
-  buttons = [[
-        InlineKeyboardButton('Help', callback_data='help'),
-        InlineKeyboardButton('Close', callback_data='close')
-    ],
-    [
-        InlineKeyboardButton('Our Channel', url='http://telegram.me/BotzArena'),
-        InlineKeyboardButton('Support', url='https://t.me/Chatting_Spot')
-    ]]
-  reply_markup = InlineKeyboardMarkup(buttons)
-  await Tgraph.send_message(
-        chat_id=message.chat.id,
-        text="""<b>Hey there,
-        
-im a telegraph Uploader That Can Upload Photo, Video And Gif
-        
-Simply send me photo, video or gif to upload to Telegra.ph
-        
-Made With Love By @BotzArena</b>""",
-        reply_markup=reply_markup,
-        parse_mode="html",
-        reply_to_message_id=Message.message.id
+@jvbot.on_message(filters.command(["start"]) & filters.private)
+async def start_t(bot, message):
+    await message.reply_text(
+        text=START_TEXT.format(message.from_user.mention),
+        disable_web_page_preview=True,
+        reply_markup=InlineKeyboardMarkup([[InlineKeyboardButton('Updates Channel', url='https://t.me/BotzArena'), InlineKeyboardButton('Support Group', url='https://t.me/Chatting_Spot')]])
     )
 
-@Tgraph.on_message(filters.command(["help"]))
-async def help(client, message):
-  buttons = [[
-        InlineKeyboardButton('Home', callback_data='home'),
-        InlineKeyboardButton('Close', callback_data='close')
-    ],
-    [
-        InlineKeyboardButton('Our Channel', url='http://telegram.me/BotzArena')
-    ]]
-  reply_markup = InlineKeyboardMarkup(buttons)
-  await Tgraph.send_message(
-        chat_id=message.chat.id,
-        text="""There Is Nothung To KnowMore,
-        
-Just Send Me A Video/gif/photo Upto 5mb.
-i'll upload ut to telegra.ph and give you the direct link""",
-        reply_markup=reply_markup,
-        parse_mode="html",
-        reply_to_message_id=message.message_id
-    )                           
-@Tgraph.on_callback_query()
-async def button(Tgraph, update):
-      cb_data = update.data
-      if "help" in cb_data:
-        await update.message.delete()
-        await help(Tgraph, update.message)
-      elif "close" in cb_data:
-        await update.message.delete() 
-      elif "home" in cb_data:
-        await update.message.delete()
-        await home(Tgraph, update.message)
 
-Tgraph.run()
+@jvbot.on_message(filters.media & filters.sticker)
+async def telegraph(bot, message):
+    DOWNLOAD_DIRECTORY = "./Downloads"
+    editable = await message.reply_text("Downloading to my server")
+    if not ((message.photo and message.photo.file_size <= LIMIT)
+            or (message.animation and message.animation.file_size <= LIMIT)
+            or (message.video and message.video.file_size <= LIMIT)
+            or (message.sticker)
+            or (message.document
+                and message.document.file_name.endswith(
+                    ('.jpg', '.jpeg', '.png', '.gif', '.mp4'))
+                and message.document.file_size <= LIMIT)):
+        await editable.edit("This media is not supported!......")
+        return
+    await editable.edit("Now I'am Uploading to telegra.ph server ...")
+    down_loc = await bot.download_media(
+        message=message.reply_to_message,
+        file_name=DOWNLOAD_DIRECTORY
+    )
+    if message.sticker:
+        img = Image.open(down_loc).convert('RGB')
+        img.save(f'{DOWNLOAD_DIRECTORY}/SexyPiyush-{message.from_user.id}.png', 'png')
+        os.remove(down_loc)
+        down_loc = f'{DOWNLOAD_DIRECTORY}/SexyPiyush-{message.from_user.id}.png'
+    await editable.edit("`Uploading to telegraph plox wait....`")
+    try:
+        response = upload_file(down_loc)
+    except Exception as t_e:
+        await editable.edit(t_e)
+    else:
+        await editable.edit(text=f"Successfully Uploaded to telegraph \n**[Telegra.ph Link!](https://telegra.ph{response[0]})**",
+                            reply_markup=InlineKeyboardMarkup([[InlineKeyboardButton(text="Open Link", url=f"https://telegra.ph{response[0]}"), InlineKeyboardButton(text="Share Link", url=f"https://telegram.me/share/url?url=https://telegra.ph{response[0]}")]]),
+                            disable_web_page_preview=False
+                            )
+    finally:
+        os.remove(down_loc)
