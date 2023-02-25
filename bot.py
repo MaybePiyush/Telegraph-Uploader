@@ -1,21 +1,16 @@
+from PIL import Image
 import os
 from telegraph import upload_file
-import pyrogram
-from pyrogram import filters, Client
-from sample_config import Config
-from pyrogram.types import (
-    InlineQueryResultArticle, InputTextMessageContent,
-    InlineKeyboardMarkup, InlineKeyboardButton,
-    CallbackQuery, InlineQuery)
+from pyrogram import Client, filters
+from pyrogram.types import InlineKeyboardMarkup, InlineKeyboardButton
 
 LIMIT = 5242880*2
 
-
 jvbot = Client(
-   "Telegra.ph Uploader",
-   api_id=Config.APP_ID,
-   api_hash=Config.API_HASH,
-   bot_token=Config.TG_BOT_TOKEN,
+    "Telegraph bot",
+    bot_token = os.environ["BOT_TOKEN"],
+    api_id = int(os.environ["API_ID"]),
+    api_hash = os.environ["API_HASH"],
 )
 
 START_TEXT = """
