@@ -270,6 +270,7 @@ async def sticker_upload(bot, message):
                 [
                    InlineKeyboardButton("Support🤩", url="https://t.me/Chatting_Spot"),
             InlineKeyboardButton("Updates🤖", url="https://t.me/BotzArena")
+                ]
                 [
                     InlineKeyboardButton("Web Preview🌐", url=generated_link)
                 ]
