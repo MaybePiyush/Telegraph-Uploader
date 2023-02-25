@@ -1,0 +1,39 @@
+{
+    "name": "Telegra.ph Uploader Bot",
+    "description": "A bot that can upload medias to Telegra.ph",
+    "logo": "https://telegra.ph/file/b69c591d9667d187249c0.jpg",
+    "keywords": [
+        "Telegra.ph",
+        "Uploader",
+        "Telegram Bot"
+    ],
+    "website": "https://github.com/MaybePiyush/",
+    "repository": "https://github.com/MaybePiyush/Telegraph-Uploader",
+    "success_url": "HEHE",
+    "env": {
+        "TG_BOT_TOKEN": {
+            "description": "You Telegram Bot Token from @BotFather",
+            "value": ""
+        },
+        "API_HASH": {
+            "description": "Your API Hash from my.telegram.org",
+            "value": ""
+        },
+        "APP_ID": {
+            "description": "Your API ID from my.telegram.org",
+            "value": ""
+        }
+    },
+    "addons": [],
+    "buildpacks": [
+        {
+            "url": "heroku/python"
+        }
+    ],
+    "formation": {
+        "worker": {
+            "quantity": 1,
+            "size": "eco"
+        }
+    }
+}
