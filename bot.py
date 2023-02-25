@@ -86,7 +86,7 @@ Simply send me photo, video or gif to upload to Telegra.ph
 Made With Love By @BotzArena</b>""",
         reply_markup=reply_markup,
         parse_mode="html",
-        reply_to_message_id=message.message_id
+        reply_to_message_id=message.Message.id
     )
 
 @Tgraph.on_message(filters.command(["help"]))
