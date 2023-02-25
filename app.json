@@ -8,9 +8,15 @@
     "telegram-bot",
     "pyrogram"
     ],
-    "env": { "BOT_TOKEN": { "description": "Your Bot token from @Botfather" }, 
-            "API_ID": { "description": "Your API_ID from https://my.telegram.org/apps " }, 
-            "API_HASH": { "description": "Your API_HASH from https://my.telegram.org/apps" }
+    "env": { "BOT_TOKEN": { "description": "A Bot's token from Botfather",
+        "value": "",
+        "required": true }, 
+            "API_ID": { "description": "A Bot's token from Botfather",
+        "value": "",
+        "required": true }, 
+            "API_HASH": { "description": "A Bot's token from Botfather",
+        "value": "",
+        "required": true }
       },
     "buildpacks": [
           {
